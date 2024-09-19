@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Tomarket Web
-// @version      1.1
+// @version      1.2
 // @description  Запуск Tomarket в браузере
 // @author       mudachyo
 // @match        https://web.telegram.org/*/*
@@ -13,26 +13,22 @@
 // ==/UserScript==
 
 (function() {
-    function updateIframeSrc() {
-      const iframe = document.querySelector('iframe.payment-verification');
-  
-      if (iframe) {
+  function updateIframeSrc() {
+    const iframes = document.querySelectorAll('iframe.zA1w1IOq, iframe.payment-verification');
+
+    iframes.forEach(iframe => {
         let src = iframe.src;
-  
-        if (src.includes('mini-app.tomarket.ai') && !src.includes('tgWebAppPlatform=ios')) {
-          if (src.includes('tgWebAppPlatform=weba')) {
-            src = src.replace(/tgWebAppPlatform=weba/g, 'tgWebAppPlatform=ios');
-          } else if (src.includes('tgWebAppPlatform=web')) {
-            src = src.replace(/tgWebAppPlatform=web/g, 'tgWebAppPlatform=ios');
-          }
-  
-          iframe.src = src;
-  
-          console.log('Ссылка обновлена:', src);
+
+        // Изменено условие для замены платформы
+        if (src.includes('mini-app.tomarket.ai') && (src.includes('tgWebAppPlatform=weba') || src.includes('tgWebAppPlatform=web'))) {
+            src = src.replace(/tgWebAppPlatform=(weba|web)/g, 'tgWebAppPlatform=ios');
+
+            iframe.src = src;
+
+            console.log('Ссылка обновлена:', src);
         }
-      } else {
-      }
-    }
+    });
+  }
   
-    setInterval(updateIframeSrc, 2000);
-  })();
+  setInterval(updateIframeSrc, 2000);
+})();
